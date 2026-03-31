@@ -1,0 +1,60 @@
+[package]
+name = "a2a"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[features]
+default = []
+server = ["dep:futures-core", "dep:futures-util"]
+client = ["dep:reqwest", "dep:eventsource-stream", "dep:futures-core", "dep:futures-util"]
+axum = ["server", "dep:axum", "dep:futures-util", "dep:tokio"]
+jws = ["dep:p256", "dep:rsa", "dep:sha2", "dep:signature"]
+
+[dependencies]
+base64 = "0.22"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+time = { version = "0.3", features = ["serde-well-known", "parsing", "formatting", "macros"] }
+
+# Server feature — handler trait and JSON-RPC dispatch.
+# Client feature — HTTP client for calling remote A2A agents.
+# futures-core provides the Stream trait with no runtime dependency.
+# reqwest provides the HTTP client; eventsource-stream parses SSE.
+futures-core = { version = "0.3", optional = true }
+reqwest = { version = "0.13", default-features = false, features = ["json", "stream", "rustls"], optional = true }
+eventsource-stream = { version = "0.2", optional = true }
+futures-util = { version = "0.3", default-features = false, optional = true }
+
+# Axum feature — router integration for serving A2A agents.
+# Enables the server feature automatically.
+axum = { version = "0.8", default-features = false, features = ["json", "tokio", "http1"], optional = true }
+tokio = { version = "1", features = ["rt", "sync"], optional = true }
+
+# JWS feature — agent card signature verification per RFC 7515.
+# Pure Rust RustCrypto crates, Wasm-compatible, no FFI.
+p256 = { version = "0.13", default-features = false, features = ["ecdsa"], optional = true }
+rsa = { version = "0.9", default-features = false, features = ["std", "sha2"], optional = true }
+sha2 = { version = "0.10", optional = true }
+signature = { version = "2", optional = true }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt", "rt-multi-thread"] }
+tower = { version = "0.5", features = ["util"] }
+futures-util = { version = "0.3" }
+rand_core = { version = "0.6", features = ["getrandom"] }
+
+[[example]]
+name = "echo_agent"
+required-features = ["axum"]
+
+[[example]]
+name = "streaming_agent"
+required-features = ["axum"]
+
+[[example]]
+name = "stateful_agent"
+required-features = ["axum"]

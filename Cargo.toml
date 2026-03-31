@@ -1,0 +1,15 @@
+[workspace]
+resolver = "2"
+members = ["a2a"]
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+
+[workspace.package]
+version = "0.0.0"
+edition = "2024"
+license = "MPL-2.0"
