@@ -77,6 +77,15 @@ impl A2AHandler for EchoAgent {
 
 #[tokio::main]
 async fn main() {
+	// Get a TCP listener with a random port
+	let listener = tokio::net::TcpListener::bind("0.0.0.0:0")
+		.await
+		.expect("failed to bind to a port");
+	let port = listener
+		.local_addr()
+		.expect("failed to get local address")
+		.port();
+
 	// Build the agent card that describes this agent's identity and
 	// capabilities. Served at /.well-known/agent.json for discovery
 	// by other agents and orchestrators.
@@ -86,7 +95,7 @@ async fn main() {
 			"Echoes messages back to the caller—a minimal A2A agent for testing and development"
 				.into(),
 		supported_interfaces: vec![AgentInterface::new(
-			"http://localhost:3000",
+			format!("http://localhost:{port}"),
 			"JSONRPC",
 			"1.0",
 		)],
@@ -102,12 +111,8 @@ async fn main() {
 	// for agent discovery.
 	let router = a2a_router(EchoAgent, card);
 
-	let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
-		.await
-		.expect("failed to bind to port 3000");
-
-	println!("Echo agent listening on http://localhost:3000");
-	println!("Agent card at http://localhost:3000/.well-known/agent.json");
+	println!("Echo agent listening on http://localhost:{port}");
+	println!("Agent card at http://localhost:{port}/.well-known/agent.json");
 
 	axum::serve(listener, router)
 		.await

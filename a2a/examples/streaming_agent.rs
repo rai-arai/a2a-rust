@@ -121,12 +121,21 @@ impl A2AHandler for StreamingAgent {
 
 #[tokio::main]
 async fn main() {
+	// Get a TCP listener with a random port
+	let listener = tokio::net::TcpListener::bind("0.0.0.0:0")
+		.await
+		.expect("failed to bind to a port");
+	let port = listener
+		.local_addr()
+		.expect("failed to get local address")
+		.port();
+
 	let card = AgentCard::new(AgentCardRequired {
 		name: "Streaming Agent".into(),
 		description: "Demonstrates SSE streaming with progress updates and artifact delivery"
 			.into(),
 		supported_interfaces: vec![AgentInterface::new(
-			"http://localhost:3001",
+			format!("http://localhost:{port}"),
 			"JSONRPC",
 			"1.0",
 		)],
@@ -139,12 +148,8 @@ async fn main() {
 
 	let router = a2a_router(StreamingAgent, card);
 
-	let listener = tokio::net::TcpListener::bind("0.0.0.0:3001")
-		.await
-		.expect("failed to bind to port 3001");
-
-	println!("Streaming agent listening on http://localhost:3001");
-	println!("Agent card at http://localhost:3001/.well-known/agent.json");
+	println!("Streaming agent listening on http://localhost:{port}");
+	println!("Agent card at http://localhost:{port}/.well-known/agent.json");
 
 	axum::serve(listener, router)
 		.await
