@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["a2a", "server", "client", "jws", "axum"]
+members = ["a2a", "server", "client", "jws", "axum", "store"]
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

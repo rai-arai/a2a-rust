@@ -26,6 +26,7 @@ pub(crate) mod serde_helpers;
 pub mod stream_event;
 pub mod task;
 pub mod task_state;
+pub mod task_store;
 
 pub use agent_card::{
 	AgentCapabilities, AgentCard, AgentCardRequired, AgentCardSignature, AgentExtension,
@@ -49,4 +50,5 @@ pub use role::Role;
 pub use stream_event::{StreamResponse, TaskArtifactUpdateEvent, TaskStatusUpdateEvent};
 pub use task::{Task, TaskStatus};
 pub use task_state::TaskState;
+pub use task_store::TaskStore;
 pub use time::OffsetDateTime;

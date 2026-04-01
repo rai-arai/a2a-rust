@@ -1,0 +1,19 @@
+[package]
+name = "a2a-store"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[features]
+default = ["memory"]
+memory = ["dep:tokio"]
+
+[dependencies]
+a2a = { workspace = true }
+tokio = { workspace = true, features = ["sync"], optional = true }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt"] }
