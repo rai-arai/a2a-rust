@@ -226,12 +226,21 @@ impl A2AHandler for StatefulAgent {
 
 #[tokio::main]
 async fn main() {
+	// Get a TCP listener with a random port
+	let listener = tokio::net::TcpListener::bind("0.0.0.0:0")
+		.await
+		.expect("failed to bind to a port");
+	let port = listener
+		.local_addr()
+		.expect("failed to get local address")
+		.port();
+
 	let card = AgentCard::new(AgentCardRequired {
 		name: "Stateful Agent".into(),
 		description: "Demonstrates task lifecycle management with create, retrieve, and cancel"
 			.into(),
 		supported_interfaces: vec![AgentInterface::new(
-			"http://localhost:3002",
+			format!("http://localhost:{port}"),
 			"JSONRPC",
 			"1.0",
 		)],
@@ -256,12 +265,8 @@ async fn main() {
 
 	let router = a2a_router(agent, card);
 
-	let listener = tokio::net::TcpListener::bind("0.0.0.0:3002")
-		.await
-		.expect("failed to bind to port 3002");
-
-	println!("Stateful agent listening on http://localhost:3002");
-	println!("Agent card at http://localhost:3002/.well-known/agent.json");
+	println!("Stateful agent listening on http://localhost:{port}");
+	println!("Agent card at http://localhost:{port}/.well-known/agent.json");
 
 	axum::serve(listener, router)
 		.await
