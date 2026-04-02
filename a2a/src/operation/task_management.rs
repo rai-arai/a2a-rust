@@ -474,7 +474,9 @@ pub struct ListTasksResponse {
 	pub total_size: i32,
 
 	/// Opaque token for retrieving the next page of results.
-	/// Empty string when this is the final page.
+	/// Empty string when this is the final page. Defaults to empty
+	/// when absent on the wire, matching proto3 string zero-value.
+	#[serde(default)]
 	pub next_page_token: String,
 }
 

@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["a2a"]
+members = ["a2a", "server", "client", "jws", "axum"]
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
@@ -13,3 +13,17 @@ pedantic = { level = "deny", priority = -1 }
 version = "0.0.0"
 edition = "2024"
 license = "MPL-2.0"
+
+[workspace.dependencies]
+a2a = { path = "a2a", version = "0.0.0" }
+a2a-server = { path = "server", version = "0.0.0" }
+a2a-client = { path = "client", version = "0.0.0" }
+a2a-jws = { path = "jws", version = "0.0.0" }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+time = { version = "0.3", features = ["serde-well-known", "parsing", "formatting", "macros"] }
+futures-core = "0.3"
+futures-util = { version = "0.3", default-features = false }
+tokio = { version = "1", features = ["rt", "sync"] }
