@@ -544,11 +544,15 @@ impl DeleteTaskPushNotificationConfigParams {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ListTaskPushNotificationConfigsResponse {
-	/// The push notification configs for this page.
+	/// The push notification configs for this page. Defaults to empty
+	/// when absent on the wire, matching proto3 repeated field semantics.
+	#[serde(default)]
 	pub configs: Vec<TaskPushNotificationConfig>,
 
 	/// Opaque cursor token for retrieving the next page of results.
-	/// Empty string when this response is the final page.
+	/// Empty string when this response is the final page. Defaults to
+	/// empty when absent on the wire, matching proto3 string zero-value.
+	#[serde(default)]
 	pub next_page_token: String,
 }
 
